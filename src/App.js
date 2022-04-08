@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react'
+import Dice from './images/icon-dice.svg'
+import Pattern from './images/pattern-divider-desktop.svg'
 
 function App() {
+
+  const [advice, setAdvice] = useState({})
+
+  const getAdvice = async () => {
+    let adviceSlip = await fetch('https://api.adviceslip.com/advice')
+    return adviceSlip.json()
+  }
+
+  const showAdvice = () => {
+    getAdvice().then(data => {
+      setAdvice(data.slip)
+    })
+  }
+
+  useEffect(() => {
+    showAdvice()
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="card">
+        <p>Advice #{advice.id}</p>
+        <h1>"{ advice.advice }"</h1>
+
+        <img src={Pattern} className="pattern" alt="" />
+
+        <button onClick={showAdvice}>
+          <img src={Dice} alt="" />
+        </button>
+      </div>
     </div>
   );
 }
